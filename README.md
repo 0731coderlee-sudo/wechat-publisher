@@ -25,11 +25,32 @@
 npm install -g @wenyan-md/cli
 ```
 
-### 2. 克隆此仓库
+### 2. 获取 skill
+
+**方式 1：下载 .skill 文件（推荐，最简单）**
+
+```bash
+# 下载打包文件
+curl -LO https://github.com/0731coderlee-sudo/wechat-publisher/raw/main/wechat-publisher.skill
+
+# 解压
+unzip wechat-publisher.skill
+
+# 进入目录
+cd wechat-publisher
+```
+
+**方式 2：Git clone**
 
 ```bash
 git clone https://github.com/0731coderlee-sudo/wechat-publisher.git
 cd wechat-publisher
+```
+
+**方式 3：通过 Skills.sh**
+
+```bash
+npx skills add 0731coderlee-sudo/wechat-publisher
 ```
 
 ### 3. 配置 API 凭证

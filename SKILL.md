@@ -1,3 +1,26 @@
+---
+name: wechat-publisher
+description: "一键发布 Markdown 到微信公众号草稿箱。基于 wenyan-cli，支持多主题、代码高亮、图片自动上传。"
+metadata:
+  {
+    "openclaw":
+      {
+        "emoji": "📱",
+        "requires": { "bins": ["wenyan"] },
+        "install":
+          [
+            {
+              "id": "npm",
+              "kind": "node",
+              "package": "@wenyan-md/cli",
+              "bins": ["wenyan"],
+              "label": "Install wenyan-cli (npm)",
+            },
+          ],
+      },
+  }
+---
+
 # wechat-publisher
 
 **一键发布 Markdown 文章到微信公众号草稿箱**

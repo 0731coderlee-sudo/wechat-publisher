@@ -2,36 +2,81 @@
 
 **一键发布 Markdown 到微信公众号草稿箱 🚀**
 
-## 🎯 快速开始
+基于 [wenyan-cli](https://github.com/caol64/wenyan-cli) 封装的 OpenClaw skill。
 
-### 1. 发布测试文章
+---
+
+## ✨ 功能特性
+
+- 🚀 **一键发布** - Markdown 自动转换并推送到草稿箱
+- 🎨 **多主题支持** - lapis、phycat、default 等精美主题
+- 💻 **代码高亮** - 9 种代码高亮主题，Mac 风格代码块
+- 🖼️ **图片自动处理** - 本地/网络图片自动上传到微信图床
+- 🔒 **安全设计** - 凭证从 TOOLS.md 读取，不会泄露
+- 📚 **完整文档** - 详细的使用说明和故障排查指南
+
+---
+
+## 🚀 快速开始
+
+### 1. 安装 wenyan-cli
 
 ```bash
-cd /Users/leebot/.openclaw/workspace/wechat-publisher
-
-# 方式 1: 使用脚本（推荐）
-./scripts/publish.sh test-article.md
-
-# 方式 2: 直接使用 wenyan
-wenyan publish -f test-article.md -t lapis -h solarized-light
+npm install -g @wenyan-md/cli
 ```
 
-### 2. 查看草稿箱
+### 2. 克隆此仓库
 
-前往微信公众号后台：https://mp.weixin.qq.com/
+```bash
+git clone https://github.com/0731coderlee-sudo/wechat-publisher.git
+cd wechat-publisher
+```
 
-草稿箱 → 查看刚发布的文章 → 审核 → 发布
+### 3. 配置 API 凭证
+
+在 OpenClaw workspace 的 `TOOLS.md` 中添加：
+
+```markdown
+## 🔐 WeChat Official Account (微信公众号)
+
+**API Credentials:**
+\`\`\`bash
+export WECHAT_APP_ID=your_wechat_app_id
+export WECHAT_APP_SECRET=your_wechat_app_secret
+\`\`\`
+
+**IP Whitelist:** 确保运行机器的 IP 已添加到公众号后台白名单
+
+**后台地址:** https://mp.weixin.qq.com/
+```
+
+**如何获取凭证：**
+1. 登录微信公众号后台：https://mp.weixin.qq.com/
+2. 设置与开发 → 基本配置 → 开发者ID(AppID) 和 开发者密码(AppSecret)
+3. 添加服务器 IP 到白名单：设置与开发 → 基本配置 → IP白名单
+
+### 4. 发布测试文章
+
+```bash
+./scripts/publish.sh example.md
+```
+
+### 5. 查看草稿箱
+
+前往微信公众号后台草稿箱查看：https://mp.weixin.qq.com/
 
 ---
 
 ## 📝 使用方法
 
-### 准备 Markdown 文件
+### Markdown 格式要求
+
+文件顶部**必须**包含 frontmatter（wenyan 强制要求）：
 
 ```markdown
 ---
 title: 文章标题（必填！）
-cover: https://example.com/cover.jpg  # 封面图（必填！）
+cover: ./assets/cover.jpg  # 封面图（必填！推荐 1080×864）
 ---
 
 # 正文开始
@@ -39,169 +84,146 @@ cover: https://example.com/cover.jpg  # 封面图（必填！）
 你的内容...
 ```
 
-**⚠️ 重要：** title 和 cover **都是必填**，缺一不可！
+**封面图推荐：**
+- **相对路径**（推荐）：`./assets/cover.jpg`
+- **绝对路径**：`/path/to/cover.jpg`
+- **网络图片**：`https://example.com/cover.jpg`
+- **尺寸建议**：1080×864（微信推荐比例）
 
-### 发布文章
+### 发布命令
 
 ```bash
-./scripts/publish.sh your-article.md [theme] [highlight]
-```
-
-**示例：**
-```bash
-# 使用默认主题
+# 基本用法（使用默认主题）
 ./scripts/publish.sh article.md
-
-# 指定主题
-./scripts/publish.sh article.md lapis
 
 # 指定主题和代码高亮
 ./scripts/publish.sh article.md lapis solarized-light
+
+# 可用主题：lapis, phycat, default, orange, purple...
+# 可用代码高亮：solarized-light, monokai, github, atom-one-dark...
 ```
 
 ---
 
-## 🎨 主题选项
+## 🎨 主题预览
 
-查看所有可用主题：
-```bash
-wenyan theme -l
-```
+| 主题 | 风格 | 适合场景 |
+|------|------|----------|
+| **lapis** | 蓝色优雅 | 技术文章、教程 |
+| **phycat** | 绿色清新 | 博客、随笔 |
+| **default** | 经典简约 | 通用场景 |
+| **orange** | 橙色活力 | 产品介绍 |
+| **purple** | 紫色神秘 | 设计、创意 |
 
-**推荐组合：**
-- `lapis` + `solarized-light` - 优雅蓝色（推荐）
-- `phycat` + `github` - 简洁现代
-- `default` + `xcode` - 经典风格
-
-详见：[references/themes.md](references/themes.md)
+查看完整主题列表：[references/themes.md](references/themes.md)
 
 ---
 
-## 🔧 配置
+## 🛠️ 故障排查
 
-### 环境变量
+### 常见问题
 
-**方式 1: 使用 setup.sh**
-```bash
-source ./scripts/setup.sh
-```
+**1. 错误：`Error: 未能找到文章封面`**
+- **原因**：frontmatter 缺少 `cover` 字段
+- **解决**：确保 frontmatter 包含 `title` 和 `cover`
 
-**方式 2: 手动设置**
-```bash
-export WECHAT_APP_ID=your_wechat_app_id
-export WECHAT_APP_SECRET=your_wechat_app_secret
-```
+**2. 错误：`Error: 45166 (IP地址不在白名单中)`**
+- **原因**：运行机器的 IP 未添加到微信白名单
+- **解决**：登录公众号后台添加 IP 到白名单
 
-**方式 3: 永久设置**
+**3. 发布成功但看不到文章？**
+- **原因**：文章在草稿箱，需要审核发布
+- **解决**：草稿箱 → 选中文章 → 发布
 
-编辑 `~/.zshrc`：
-```bash
-echo 'export WECHAT_APP_ID=your_wechat_app_id' >> ~/.zshrc
-echo 'export WECHAT_APP_SECRET=your_wechat_app_secret' >> ~/.zshrc
-source ~/.zshrc
-```
+**4. 图片上传失败？**
+- **原因**：网络图片无法访问或格式不支持
+- **解决**：使用本地图片或检查网络连接
 
-### IP 白名单
-
-**获取你的 IP：**
-```bash
-curl ifconfig.me
-```
-
-**添加到白名单：**
-1. 登录：https://mp.weixin.qq.com/
-2. 开发 → 基本配置 → IP 白名单
-3. 添加你的 IP 地址
+查看完整故障排查指南：[references/troubleshooting.md](references/troubleshooting.md)
 
 ---
 
-## 📚 文档
-
-- **使用指南：** [SKILL.md](SKILL.md)
-- **主题列表：** [references/themes.md](references/themes.md)
-- **故障排查：** [references/troubleshooting.md](references/troubleshooting.md)
-
----
-
-## 🛠️ 依赖
-
-- **Node.js** >= 14.0.0
-- **wenyan-cli** (自动安装)
-
----
-
-## 💡 在 OpenClaw 中使用
-
-只需告诉 leezy：
-
-> "帮我发布这篇文章到微信公众号" + 提供 Markdown 文件路径
-
-leezy 会自动调用这个 skill！
-
----
-
-## 📦 文件结构
+## 📂 项目结构
 
 ```
 wechat-publisher/
-├── SKILL.md                    # 完整文档
-├── README.md                   # 快速开始
-├── test-article.md             # 测试文章
+├── SKILL.md                     # OpenClaw skill 完整文档
+├── README.md                    # 本文件
+├── example.md                   # 测试文章示例
+├── .gitignore                   # Git 忽略文件
+├── assets/
+│   └── default-cover.jpg        # 默认封面（1080×864）
 ├── scripts/
-│   ├── publish.sh              # 发布脚本
-│   └── setup.sh                # 环境变量设置
+│   ├── publish.sh               # 发布脚本（自动加载凭证）
+│   └── setup.sh                 # 环境变量设置脚本
 └── references/
-    ├── themes.md               # 主题列表
-    └── troubleshooting.md      # 故障排查
+    ├── themes.md                # 主题列表和使用说明
+    └── troubleshooting.md       # 详细故障排查指南
 ```
 
 ---
 
-## 🎉 特性
+## 🔧 高级用法
 
-- ✅ 一键发布到草稿箱
-- ✅ 自动上传图片到微信图床
-- ✅ 多主题支持（代码高亮、Mac 风格）
-- ✅ 本地/网络图片都支持
-- ✅ 完整的错误提示和帮助
+### 自定义主题
 
----
+创建你自己的主题配置文件：
 
-## 📖 示例
-
-### 基本使用
 ```bash
-./scripts/publish.sh article.md
+wenyan theme create my-theme
+wenyan publish -f article.md -t my-theme
 ```
 
-### 指定主题
+### 批量发布
+
 ```bash
-./scripts/publish.sh article.md lapis solarized-light
+for file in articles/*.md; do
+    ./scripts/publish.sh "$file"
+done
 ```
 
-### 查看帮助
+### 使用环境变量
+
 ```bash
-./scripts/publish.sh --help
-wenyan --help
+export WECHAT_APP_ID=your_id
+export WECHAT_APP_SECRET=your_secret
+wenyan publish -f article.md
 ```
 
 ---
 
-## 🐛 遇到问题？
+## 🤝 贡献
 
-查看：[references/troubleshooting.md](references/troubleshooting.md)
+欢迎提交 Issue 和 Pull Request！
 
-常见问题：
-- IP 不在白名单 → 添加到公众号后台
-- wenyan 未安装 → `npm install -g @wenyan-md/cli`
-- 环境变量未设置 → `source ./scripts/setup.sh`
+### 开发流程
 
----
-
-## 📄 License
-
-Apache License 2.0 (继承自 wenyan-cli)
+1. Fork 此仓库
+2. 创建特性分支：`git checkout -b feature/amazing-feature`
+3. 提交更改：`git commit -m 'Add amazing feature'`
+4. 推送到分支：`git push origin feature/amazing-feature`
+5. 提交 Pull Request
 
 ---
 
-**Powered by [wenyan-cli](https://github.com/caol64/wenyan-cli)**
+## 📄 许可证
+
+MIT License - 详见 [LICENSE](LICENSE) 文件
+
+---
+
+## 🙏 致谢
+
+- [wenyan-cli](https://github.com/caol64/wenyan-cli) - 优秀的微信公众号发布工具
+- [OpenClaw](https://openclaw.ai) - 强大的 AI Agent 框架
+
+---
+
+## 📮 联系方式
+
+- **GitHub**: [@0731coderlee-sudo](https://github.com/0731coderlee-sudo)
+- **Issues**: [提交问题](https://github.com/0731coderlee-sudo/wechat-publisher/issues)
+
+---
+
+**如果这个 skill 对你有帮助，请给个 ⭐️ Star！**

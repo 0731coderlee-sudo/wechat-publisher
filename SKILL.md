@@ -6,17 +6,6 @@ metadata:
     "openclaw":
       {
         "emoji": "📱",
-        "requires": { "bins": ["wenyan"] },
-        "install":
-          [
-            {
-              "id": "npm",
-              "kind": "node",
-              "package": "@wenyan-md/cli",
-              "bins": ["wenyan"],
-              "label": "Install wenyan-cli (npm)",
-            },
-          ],
       },
   }
 ---
@@ -37,13 +26,20 @@ metadata:
 
 ## 快速开始
 
-### 1. 安装依赖
+### 1. 安装 wenyan-cli
+
+**wenyan-cli 需要全局安装：**
 
 ```bash
-# Skill 会自动检测并安装 wenyan-cli
-# 如果你想手动安装：
 npm install -g @wenyan-md/cli
 ```
+
+**验证安装：**
+```bash
+wenyan --help
+```
+
+> **注意：** publish.sh 脚本会自动检测并安装 wenyan-cli（如果未安装）
 
 ### 2. 配置 API 凭证
 

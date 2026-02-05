@@ -1,0 +1,12 @@
+# 忽略包含敏感信息的文件
+.env
+*.local
+
+# 忽略测试文件
+test-*.md
+*-test.md
+
+# 忽略临时文件
+*.tmp
+*.log
+.DS_Store
